@@ -4,8 +4,6 @@ import SlimSelect from 'slim-select';
 import 'slim-select/dist/slimselect.css';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
-
-
 const selectEl = document.querySelector('.breed-select');
 const catInfoEl = document.querySelector('.cat-info');
 const loaderEl = document.querySelector('.loader');
@@ -13,8 +11,8 @@ const errorEl = document.querySelector('.error');
 
 let arrBreedsId = [];
 
-catInfoEl.classList.add('visually-hidden');
 loaderEl.classList.replace('loader', 'visually-hidden');
+catInfoEl.classList.add('visually-hidden');
 errorEl.classList.add('visually-hidden');
 
 fetchBreeds()
@@ -26,39 +24,39 @@ fetchBreeds()
                 select: selectEl,
                  data: arrBreedsId
         })
+        selectEl.addEventListener('change', onSelectBreed);
     })
     .catch(fetchError)
-
-selectEl.addEventListener('change', onSelectBreed);
 
 function onSelectBreed(evt) {
     loaderEl.classList.replace('visually-hidden', 'loader');
     // selectEl.classList.add('visually-hidden');
-    // catInfoEl.classList.add('visually-hidden');
+    catInfoEl.classList.add('visually-hidden');
 
     let breedsId = evt.currentTarget.value;
     fetchCatByBreed(breedsId)
         .then((data) => {
             loaderEl.classList.replace('loader', 'visually-hidden');
-            // selectEl.classList.remove('visually-hidden');
-            
+            selectEl.classList.remove('is-hidden');            
             const { url, breeds } = data[0];
-            // catInfoEl.innerHTML = `<div class="box-img"><img src="${url}" alt="${breeds[0].name}" width="400"/></div><div class="box"><h1>${breeds[0].name}</h1><p>${breeds[0].description}</p><p><b>Temperament:</b> ${breeds[0].temperament}</p></div>`
             catInfoEl.innerHTML =  
                 `
-                 <img src="${url}" alt="${breeds[0].name}" width="500"/>
-                 <h1>${breeds[0].name}</h1>
-                <p>${breeds[0].description}</p>
-                <p><b>Temperament:</b> ${breeds[0].temperament}</p>`
+                 <img src="${url}" alt="${breeds[0].name}"/>
+                 <div class = 'cat-description'>
+                    <h1>${breeds[0].name}</h1>
+                    <p>${breeds[0].description}</p>
+                    <p><span>Temperament:</span> ${breeds[0].temperament}</p>
+                </div>`
              
             catInfoEl.classList.remove('visually-hidden');
         })      
         .catch(fetchError)
 }
+catInfoEl.classList.remove('visually-hidden');
 
 function fetchError(error) {
-    // selectEl.classList.remove('visually-hidden');
-    // loaderEl.classList.replace('loader', 'visually-hidden');
+    selectEl.classList.remove('visually-hidden');
+    loaderEl.classList.replace('loader', 'visually-hidden');
 
     Notify.failure('Oops! Something went wrong! Try reloading the page or select another cat breed!', {
         position: 'left-top',
